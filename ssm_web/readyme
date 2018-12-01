@@ -1,0 +1,60 @@
+                    ssm项目第三天（分页和security框架的使用）
+一、分页
+  1.原始分页实现
+       1.封装pageBean对象，里面包括五个必须的属性
+        pageNum，pageSize，totalPage，totalCount，list数据
+       一条主线： controller层 接收参数，传递参数到service，通过model将返回的pageBean对象放到域对象
+       service：处理需要的业务逻辑，包括totalCount，和totalPage的计算，调用dao查找数据，返回pb
+       dao：处理数据包括总记录数，需要查找的数据（startIndex，endIndex）
+       最后处理页面的数据
+  2.通过pageHelper分页插件,实现分页
+       1.导入依赖
+       2.在sessionFactory中添加plugins节点
+       3.调用插件的静态方法
+       4.改造订单的分页实现
+二、加入权限管理框架security
+  1.映入依赖
+  2.配置web.xml文件,监听器加载applicationContext.xml和security.xml文件
+  3.自定义实现user业务类,通过数据库查询
+                        ssm开发第四天
+一、用户模块
+    1.权限框架把用户名principle放到session域中,我们通过session获取
+    2.登陆登出的模块
+        通过销毁session,然后转发到登陆页面,使用权限框架使用logoutfilter
+        配置security.xml
+    3.用户的数据列表展示,
+        通过点击用户的管理,查询所有的数据,然后返回到用户列表
+    4.添加用户,点击新建,通过控制器转发到添加用户的页面,添加用户密码,我们用BCrptyPasswordEncoder 权限框架提供
+        security中配置BCryptPasswordEncoder,并且在service 中注入
+        并且去掉传递的密文验证noop
+二.查询所有的角色
+    角色的添加
+三.用户和角色表的维护
+    1.维护的实现查询用户的信息,用户角色,所用的角色
+    2.实现真实的角色,获取并登陆
+        更改真实的用户角色,通过循环添加
+        更改security.xml支持多个角色
+                        ssm开发第五天
+一、权限模块
+    1.权限列表
+    2.权限的添加
+    3.角色与权限的维护
+        通过角色表的管理权限,传递的参数为角色的id
+        获取数据:角色名,角色已有的权限,所有的权限
+        1.得到角色对象
+        2.得到角色的权限
+        3.循环遍历所有的权限,组装并判断字符串页面的判断
+        4.所有的权限集合
+    点击保存:传入参数  维护中间表
+    维护的逻辑先删除,在添加页面选择权限
+    参数的传递为:roleId 选择权限id数据
+    4.添加用户数据详情展示
+    查询所有的用户,和角色和权限
+二.权限访问控制
+    前台页面权限控制,可以通过security标签控制
+    后台控制,通过jsr-250
+
+
+
+
+

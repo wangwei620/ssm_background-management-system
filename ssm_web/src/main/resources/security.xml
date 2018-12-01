@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security.xsd">
+    <!--配置框架不需要的验证的资源路径  none表示放过-->
+    <security:http pattern="/login.jsp" security="none"></security:http>
+    <security:http pattern="/failer.jsp" security="none"></security:http>
+    <security:http pattern="/css/**" security="none"></security:http>
+    <security:http pattern="/img/**" security="none"></security:http>
+    <security:http pattern="/pages/**" security="none"></security:http>
+    <security:http pattern="/plugins/**" security="none"></security:http>
+    <security:http auto-config="true" use-expressions="true">
+        <!--多个角色之间是或者的关系 任意角色即可登录-->
+        <security:intercept-url pattern="/**" access="hasAnyRole('ROLE_ADMIN','ROLE_PRODUCT','ROLE_ORDER','ROLE_USER')"></security:intercept-url>
+        <!--自定义登陆页面-->
+        <security:form-login login-page="/login.jsp"
+        login-processing-url="/login" default-target-url="/index.jsp"
+                             authentication-failure-url="/failer.jsp"
+        ></security:form-login>
+        <!--自定义登出页面-->
+        <security:logout invalidate-session="true" logout-success-url="/login.jsp" logout-url="/logout"></security:logout>
+        <!--配置登陆成功权限不足-->
+        <security:access-denied-handler error-page="/403.jsp"></security:access-denied-handler>
+        <!--关闭跨域请求配置-->
+        <security:csrf disabled="true"></security:csrf>
+    </security:http>
+    <!--配置密码加密的工具类-->
+    <bean  id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+    </bean>
+    <!--配置拦截器的验证-->
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="userService"></security:authentication-provider>
+    </security:authentication-manager>
+</beans>
